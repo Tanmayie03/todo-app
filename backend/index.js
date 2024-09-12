@@ -1,6 +1,7 @@
 const express = require("express");
-const { createTodo } = require("./types");
+const { createTodo, updateTodo } = require("./types");
 const { todo } = require("./db");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 
@@ -35,24 +36,36 @@ app.get("/todos", async function (req, res) {
 app.put("/completed", async function (req, res) {
   const updatePayload = req.body;
   const parsedPayload = updateTodo.safeParse(updatePayload);
+
   if (!parsedPayload.success) {
-    res.status(411).json({
+    return res.status(411).json({
       msg: "You sent the wrong inputs",
     });
-    return;
   }
 
-  await todo.update(
-    {
-      _id: req.body.id,
-    },
-    {
-      completed: true,
-    }
-  );
+  try {
+    const updatedTodo = await todo.findByIdAndUpdate(
+      req.body.id,
+      { $set: { completed: true } }, // Update completed field
+      { new: true } // Return the updated document
+    );
 
-  res.json({
-    msg: "Todo marked as completed",
-  });
+    if (!updatedTodo) {
+      return res.status(404).json({
+        msg: "Todo not found",
+      });
+    }
+
+    res.json({
+      msg: "Todo marked as completed",
+      todo: updatedTodo,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Failed to update todo",
+      error: error.message,
+    });
+  }
 });
+
 app.listen(3000);

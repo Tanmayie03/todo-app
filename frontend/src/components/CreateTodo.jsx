@@ -4,11 +4,12 @@ export function CreateTodo() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   return (
-    <div>
+    <div className="bg-white p-6 text-center rounded mx-auto w-1/3">
+      <h1 className=" text-blue-400 text-lg font-semibold">Add a todo list</h1>
       <input
         type="text"
-        style={{ padding: 10, margin: 10 }}
-        placeholder="title"
+        className="p-2 my-2  outline-none w-full  rounded bg-slate-100 placeholder-zinc-800"
+        placeholder="Title"
         onChange={function (e) {
           const value = e.target.value;
           setTitle(e.target.value);
@@ -16,15 +17,15 @@ export function CreateTodo() {
       <br />
       <input
         type="text"
-        style={{ padding: 10, margin: 10 }}
-        placeholder="description"
+        className="p-2 my-2 outline-none w-full  rounded bg-slate-100 placeholder-zinc-800"
+        placeholder="Description"
         onChange={function (e) {
           const value = e.target.value;
           setDescription(e.target.value);
         }}></input>
       <br />
       <button
-        style={{ padding: 10, margin: 10 }}
+        className="p-2 my-2 bg-blue-400 text-white text-center font-semibold rounded"
         onClick={() => {
           fetch("http://localhost:3000/todo", {
             method: "POST",
